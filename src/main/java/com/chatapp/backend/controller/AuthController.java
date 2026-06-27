@@ -1,6 +1,5 @@
 package com.chatapp.backend.controller;
 
-import com.chatapp.backend.security.JwtUtil;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +14,7 @@ import com.chatapp.backend.dto.LoginRequest;
 import com.chatapp.backend.dto.RegisterRequest;
 import com.chatapp.backend.model.User;
 import com.chatapp.backend.repository.UserRepository;
+import com.chatapp.backend.security.JwtUtil;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,9 +31,10 @@ public class AuthController {
     public String register(
             @RequestBody RegisterRequest request) {
 
+        String email = request.getEmail();
+
         User existingUser =
-                userRepository.findByEmail(
-                        request.getEmail());
+                userRepository.findByEmail(email);
 
         if (existingUser != null) {
             return "Email already exists";
@@ -44,8 +45,7 @@ public class AuthController {
         user.setName(
                 request.getName());
 
-        user.setEmail(
-                request.getEmail());
+        user.setEmail(email);
 
         user.setPassword(
                 request.getPassword());
@@ -72,9 +72,10 @@ public class AuthController {
     public Map<String, Object> login(
             @RequestBody LoginRequest request) {
 
+        String email = request.getEmail();
+
         User user =
-                userRepository.findByEmail(
-                        request.getEmail());
+                userRepository.findByEmail(email);
 
         if (user == null) {
 
@@ -115,7 +116,7 @@ public class AuthController {
                         user.getEmail());
 
         Map<String, Object> response =
-                new HashMap<>();
+                new HashMap<>(6);
 
         response.put(
                 "message",

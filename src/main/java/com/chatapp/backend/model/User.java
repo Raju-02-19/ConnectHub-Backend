@@ -1,6 +1,7 @@
 package com.chatapp.backend.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -12,10 +13,14 @@ public class User {
     @Id
     private String id;
 
+    @Indexed(name = "user_code_idx")
     private String userCode;
 
     private String name;
+
+    @Indexed(name = "email_idx")
     private String email;
+
     private String password;
 
     // New Fields

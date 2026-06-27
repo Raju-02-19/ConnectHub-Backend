@@ -6,14 +6,19 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.chatapp.backend.model.Friend;
 
-public interface FriendRepository
-        extends MongoRepository<Friend, String> {
+public interface FriendRepository extends MongoRepository<Friend, String> {
+
+    List<Friend> findByUser1OrUser2(String user1, String user2);
 
     List<Friend> findByUser1(String user1);
 
     List<Friend> findByUser2(String user2);
 
-    boolean existsByUser1AndUser2(
+    boolean existsByUser1AndUser2(String user1, String user2);
+
+    boolean existsByUser1AndUser2OrUser1AndUser2(
             String user1,
-            String user2);
+            String user2,
+            String user3,
+            String user4);
 }

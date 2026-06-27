@@ -49,10 +49,15 @@ public class UserController {
             return "User Not Found";
         }
 
-        user.setName(request.getName());
-        user.setBio(request.getBio());
-        user.setStatus(request.getStatus());
-        user.setProfilePic(request.getProfilePic());
+        String name = request.getName();
+        String bio = request.getBio();
+        String status = request.getStatus();
+        String profilePic = request.getProfilePic();
+
+        user.setName(name);
+        user.setBio(bio);
+        user.setStatus(status);
+        user.setProfilePic(profilePic);
 
         userRepository.save(user);
 

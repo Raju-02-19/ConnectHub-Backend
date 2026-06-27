@@ -33,7 +33,6 @@ public class FriendController {
     public String sendRequest(@RequestBody FriendRequest request) {
 
         request.setStatus("PENDING");
-
         friendRequestRepository.save(request);
 
         return "Friend Request Sent";
@@ -53,7 +52,7 @@ public class FriendController {
         return friendRequestRepository.findAll();
     }
 
-    // Accept Request
+    // Accept Friend Request
     @PutMapping("/accept/{requestId}")
     public String acceptRequest(@PathVariable String requestId) {
 
@@ -66,23 +65,18 @@ public class FriendController {
         request.setStatus("ACCEPTED");
         friendRequestRepository.save(request);
 
-        boolean alreadyFriends = friendRepository.existsByUser1AndUser2(
-                request.getSenderId(),
-                request.getReceiverId())
-                ||
-                friendRepository.existsByUser1AndUser2(
-                        request.getReceiverId(),
-                        request.getSenderId());
+        String senderId = request.getSenderId();
+        String receiverId = request.getReceiverId();
+
+        boolean alreadyFriends =
+                friendRepository.existsByUser1AndUser2(senderId, receiverId)
+                        || friendRepository.existsByUser1AndUser2(receiverId, senderId);
 
         if (!alreadyFriends) {
 
             Friend friend = new Friend();
-
-            friend.setUser1(
-                    request.getSenderId());
-
-            friend.setUser2(
-                    request.getReceiverId());
+            friend.setUser1(senderId);
+            friend.setUser2(receiverId);
 
             friendRepository.save(friend);
         }
@@ -90,7 +84,7 @@ public class FriendController {
         return "Friend Request Accepted";
     }
 
-    // Reject Request
+    // Reject Friend Request
     @PutMapping("/reject/{requestId}")
     public String rejectRequest(@PathVariable String requestId) {
 
@@ -101,7 +95,6 @@ public class FriendController {
         }
 
         request.setStatus("REJECTED");
-
         friendRequestRepository.save(request);
 
         return "Friend Request Rejected";
@@ -111,11 +104,6 @@ public class FriendController {
     @GetMapping("/list/{userId}")
     public List<Friend> getFriends(@PathVariable String userId) {
 
-        List<Friend> friends1 = friendRepository.findByUser1(userId);
-        List<Friend> friends2 = friendRepository.findByUser2(userId);
-
-        friends1.addAll(friends2);
-
-        return friends1;
+        return friendRepository.findByUser1OrUser2(userId, userId);
     }
 }
